@@ -8,15 +8,20 @@ public class Lab2 {
     public static String pureMain(String[] commands) {
 
         // Comparator<Bid> comp = new BidCompare();
-        PriorityQueue<Bid> sell_pq = new PriorityQueue<Bid>(new SellComparator());
-        PriorityQueue<Bid> buy_pq = new PriorityQueue<Bid>(new BuyComparator());
+        PriorityQueue<Bid> sell_pq = new PriorityQueue<Bid>( new BuyComparator());
+        PriorityQueue<Bid> buy_pq = new PriorityQueue<Bid>( new SellComparator() );
 
         StringBuilder sb = new StringBuilder();
 
+       
+
         for (int line_no = 0; line_no < commands.length; line_no++) {
             String line = commands[line_no];
-            if (line.equals(""))
+
+            if (line.equals("")) {
+
                 continue;
+            }
 
             String[] parts = line.split("\\s+");
             if (parts.length != 3 && parts.length != 4)
@@ -57,7 +62,7 @@ public class Lab2 {
                     newPrice = Integer.parseInt(parts[3]);
                 } catch (NumberFormatException e) {
                     throw new RuntimeException("line " + line_no + ": invalid price");
-                }
+                }   
 
                 Bid oldBid = new Bid(name, price);
                 Bid newBid = new Bid(name, newPrice);
@@ -69,41 +74,46 @@ public class Lab2 {
             if (sell_pq.size() == 0 || buy_pq.size() == 0)
                 continue;
 
-            // int comparison = comp.compare(sell_pq.minimum(), buy_pq.maximum());
-            while (sell_pq.minimum().bid < buy_pq.minimum().bid) {
+            
+            while (sell_pq.size() != 0 && buy_pq.size() != 0 && sell_pq.minimum().bid <= buy_pq.minimum().bid) {
                 Bid min = sell_pq.minimum();
                 Bid max = buy_pq.minimum();
                 sell_pq.deleteMinimum();
                 buy_pq.deleteMinimum();
-                sb.append(min.name + " buys a share from " + max.name + " for " + max.bid);
+                sb.append(min.name + " buys a share from " + max.name + " for " + max.bid + "\n");
 
-                // Ada buys a share from Bengt for 70kr
             }
+        } // End of for-loop
+          // compare the bids of highest priority from each of
+          // each priority queues.
+          // if the lowest seller price is lower than or equal to
+          // the highest buyer price, then remove one bid from
+          // each priority queue and add a description of the
+          // transaction to the output.}sb.append("Order book:\n");
 
-            // compare the bids of highest priority from each of
-            // each priority queues.
-            // if the lowest seller price is lower than or equal to
-            // the highest buyer price, then remove one bid from
-            // each priority queue and add a description of the
-            // transaction to the output.}sb.append("Order book:\n");
+        sb.append("Säljare: ");
 
-            sb.append("Sellers: ");
-            while (sell_pq.size() > 0) {
-                Bid min = sell_pq.minimum();
-                sb.append(min.toString() + "\n");
-                sell_pq.deleteMinimum();
-            }
-            // can remove from priority queue until it is empty.
+        // System.out.println("START");
+        while (sell_pq.size() > 0) {
+            Bid min = sell_pq.minimum();
+            // System.out.println(min.bid);
+            sb.append(min.toString() + ", ");
 
-            sb.append("Buyers: ");
-            // can remove from priority queue until it is empty.
-            while (buy_pq.size() > 0) {
-                Bid max = buy_pq.minimum();
-                sb.append(max.toString() + "\n");
-                buy_pq.deleteMinimum();
-            }
+            sell_pq.deleteMinimum();
 
         }
+        // System.out.println("END");
+        sb.append("\n");
+        // can remove from priority queue until it is empty.
+
+        sb.append("Köpare: ");
+        // can remove from priority queue until it is empty.
+        while (buy_pq.size() > 0) {
+            Bid max = buy_pq.minimum();
+            sb.append(max.toString());
+            buy_pq.deleteMinimum();
+        }
+
         return sb.toString();
 
     }

@@ -7,7 +7,7 @@ public class PriorityQueue<E> {
 	private ArrayList<E> heap = new ArrayList<E>();
 	private Comparator<E> comparator;
 
-	private Map<E, Integer> map = new HashMap<>();
+	// private Map<E, Integer> map = new HashMap<>();
 
 	public PriorityQueue(Comparator<E> comparator) {
 		this.comparator = comparator;
@@ -41,7 +41,7 @@ public class PriorityQueue<E> {
 		if (size() == 0)
 			throw new NoSuchElementException();
 
-		map.remove(heap.get(0));
+		// map.remove(heap.get(0));
 		heap.set(0, heap.get(heap.size() - 1));
 		heap.remove(heap.size() - 1);
 
@@ -51,24 +51,36 @@ public class PriorityQueue<E> {
 
 	public void update(E oldElement, E newElement) {
 
-		int index = map.get(oldElement);
-		map.remove(oldElement);
-		map.put(newElement, index);
-		heap.set(index, newElement);
+		// boolean exists = heap.indexOf(oldElement) != -1;
+		// System.out.println("INDEX OF OLD ELEMENT " + heap.indexOf(oldElement));
+		// System.out.println("OLD ELEMENT" + ((Bid)oldElement)).name ==
+		// ((Bid)heap.get(0)).name && ((Bid)oldElement)).bid == ((Bid)heap.get(0)).bid);
 
-		int comparison = comparator.compare(newElement, oldElement);
+		// int index = heap.indexOf(oldElement);
+		boolean exists = heap.indexOf(oldElement) != -1;
+		if (exists) {
 
-		// if new < old then it will have higher priority hence sift up
-		if (comparison == -1) {
-			siftUp(index);
-			// if new > old then it will have lower priority hence sift down
-		} else if (comparison == 1) {
-			siftDown(index);
+			// int index = map.get(oldElement);
+			int index = heap.indexOf(oldElement);
+
+			// map.remove(oldElement);
+			// map.put(newElement, index);
+			heap.set(index, newElement);
+
+			int comparison = comparator.compare(newElement, oldElement);
+
+			// if new < old then it will have higher priority hence sift up
+			if (comparison == -1) {
+				siftUp(index);
+				// if new > old then it will have lower priority hence sift down
+			} else if (comparison == 1) {
+				siftDown(index);
+			}
+
+			// siftUp(index);
+			// index = heap.indexOf(newElement);
+			// siftDown(index);
 		}
-
-		// siftUp(index);
-		// index = heap.indexOf(newElement);
-		// siftDown(index);
 
 	}
 
@@ -81,17 +93,31 @@ public class PriorityQueue<E> {
 		int parentIndex = parent(index);
 		E parentValue = heap.get(parentIndex);
 
-		while (parentIndex != -1 && comparator.compare(parentValue, value) > 0) {
-
-			parentIndex = parent(index);
-			parentValue = heap.get(parentIndex);
+		while (parentIndex > 0 && comparator.compare(parentValue, value) > 0) {
+			// System.out.println("Is run");
+			//parentIndex = parent(index);
+			//parentValue = heap.get(parentIndex);
 
 			heap.set(parentIndex, value);
 			heap.set(index, parentValue);
 
-			index = parentIndex;
+			index = parent(index);
+			parentIndex = parent(index);
+			if (parentIndex != -1){
+				parentValue = heap.get(parentIndex);
+			}
 		}
-		map.put(value, index);
+		// map.put(value, index);
+
+
+		// int newValue = heap[index];
+
+        // while (index > 0 && newValue > heap[getParent(index)]) {
+        //     heap[index] = heap[getParent(index)];
+        //     index = getParent(index);
+        // }
+
+        // heap[index] = newValue;
 	}
 
 	// Sifts a node down.
@@ -130,7 +156,7 @@ public class PriorityQueue<E> {
 		}
 
 		heap.set(index, value);
-		map.put(value, index);
+		// map.put(value, index);
 		// here?
 	}
 

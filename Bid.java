@@ -13,14 +13,11 @@ public class Bid {
 		return 1 + 23 * bid + 31 * name.hashCode();
 	}
 
+	@Override
 	public boolean equals(Object obj) {
-		if (obj == null || !(obj instanceof Bid))
-			return false;
-
+		if (obj == null || !(obj instanceof Bid)) return false;
 		Bid bid = (Bid) obj;
-
-		return this.bid == bid.bid && this.name == bid.name;
-
+		return this.bid == bid.bid && this.name.equals(bid.name);
 	}
 
 	public String toString() {
