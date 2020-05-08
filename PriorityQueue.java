@@ -4,10 +4,10 @@ import java.util.*;
 
 // A priority queue.
 public class PriorityQueue<E> {
-	private ArrayList<E> heap = new ArrayList<E>();
+	public ArrayList<E> heap = new ArrayList<E>();
 	private Comparator<E> comparator;
 
-	// private Map<E, Integer> map = new HashMap<>();
+	private Map<E, Integer> map = new HashMap<>();
 
 	public PriorityQueue(Comparator<E> comparator) {
 		this.comparator = comparator;
@@ -21,7 +21,8 @@ public class PriorityQueue<E> {
 	// Adds an item to the priority queue.
 	public void add(E x) {
 		heap.add(x);
-		siftUp(size() - 1);
+		map.put(x,size()-1);
+		siftUp(size()-1,x);
 
 		// throw new UnsupportedOperationException();
 	}
@@ -45,36 +46,30 @@ public class PriorityQueue<E> {
 		heap.set(0, heap.get(heap.size() - 1));
 		heap.remove(heap.size() - 1);
 
-		if (heap.size() > 0)
-			siftDown(0);
+		if (heap.size() > 0){
+
+			siftDown(0,minimum());
+		}
 	}
 
 	public void update(E oldElement, E newElement) {
-
-		// boolean exists = heap.indexOf(oldElement) != -1;
-		// System.out.println("INDEX OF OLD ELEMENT " + heap.indexOf(oldElement));
-		// System.out.println("OLD ELEMENT" + ((Bid)oldElement)).name ==
-		// ((Bid)heap.get(0)).name && ((Bid)oldElement)).bid == ((Bid)heap.get(0)).bid);
-
 		// int index = heap.indexOf(oldElement);
-		boolean exists = heap.indexOf(oldElement) != -1;
+		boolean exists = map.get(oldElement) != null;
 		if (exists) {
 
 			// int index = map.get(oldElement);
-			int index = heap.indexOf(oldElement);
+			int index = map.get(oldElement);
 
-			// map.remove(oldElement);
-			// map.put(newElement, index);
+			 map.remove(oldElement);
+			 map.put(newElement, index);
 			heap.set(index, newElement);
 
 			int comparison = comparator.compare(newElement, oldElement);
 
-			// if new < old then it will have higher priority hence sift up
 			if (comparison == -1) {
-				siftUp(index);
-				// if new > old then it will have lower priority hence sift down
+				siftUp(index,newElement);
 			} else if (comparison == 1) {
-				siftDown(index);
+				siftDown(index,newElement);
 			}
 
 			// siftUp(index);
@@ -87,44 +82,33 @@ public class PriorityQueue<E> {
 	// Sifts a node up.
 	// siftUp(index) fixes the invariant if the element at 'index' may
 	// be less than its parent, but all other elements are correct.
-	private void siftUp(int index) {
-		E value = heap.get(index);
+	private void siftUp(int index,E value) {
+		// E thing = heap.get(index);
+		
 
-		int parentIndex = parent(index);
-		E parentValue = heap.get(parentIndex);
+		while (index > 0 ) {
+			int parentIndex = parent(index);
+			E parentValue = heap.get(parentIndex);
 
-		while (parentIndex > 0 && comparator.compare(parentValue, value) > 0) {
-			// System.out.println("Is run");
-			//parentIndex = parent(index);
-			//parentValue = heap.get(parentIndex);
-
-			heap.set(parentIndex, value);
-			heap.set(index, parentValue);
-
-			index = parent(index);
-			parentIndex = parent(index);
-			if (parentIndex != -1){
-				parentValue = heap.get(parentIndex);
+			if(comparator.compare(parentValue,value) <=0){
+				break;
 			}
+
+			heap.set(index, parentValue);
+			map.put(parentValue,index);
+			heap.set(parentIndex, value);
+			map.put(value,parentIndex);
+
+			index = parentIndex;
 		}
-		// map.put(value, index);
-
-
-		// int newValue = heap[index];
-
-        // while (index > 0 && newValue > heap[getParent(index)]) {
-        //     heap[index] = heap[getParent(index)];
-        //     index = getParent(index);
-        // }
-
-        // heap[index] = newValue;
+		//heap.set(index,thing);
 	}
 
 	// Sifts a node down.
 	// siftDown(index) fixes the invariant if the element at 'index' may
 	// be greater than its children, but all other elements are correct.
-	private void siftDown(int index) {
-		E value = heap.get(index);
+	private void siftDown(int index,E value) {
+		// E value = heap.get(index);
 
 		// Stop when the node is a leaf.
 		while (leftChild(index) < heap.size()) {
@@ -150,13 +134,14 @@ public class PriorityQueue<E> {
 			// carry on downwards.
 			if (comparator.compare(value, childValue) > 0) {
 				heap.set(index, childValue);
+				map.put(childValue,index);
 				index = child;
 			} else
 				break;
 		}
 
 		heap.set(index, value);
-		// map.put(value, index);
+		map.put(value, index);
 		// here?
 	}
 
@@ -172,5 +157,6 @@ public class PriorityQueue<E> {
 	private final int parent(int index) {
 		return (index - 1) / 2;
 	}
+
 
 }

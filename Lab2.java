@@ -8,8 +8,8 @@ public class Lab2 {
     public static String pureMain(String[] commands) {
 
         // Comparator<Bid> comp = new BidCompare();
-        PriorityQueue<Bid> sell_pq = new PriorityQueue<Bid>( new BuyComparator());
-        PriorityQueue<Bid> buy_pq = new PriorityQueue<Bid>( new SellComparator() );
+        PriorityQueue<Bid> sell_pq = new PriorityQueue<Bid>(   new SellComparator());
+        PriorityQueue<Bid> buy_pq = new PriorityQueue<Bid>(new BuyComparator()  );
 
         StringBuilder sb = new StringBuilder();
 
@@ -110,7 +110,7 @@ public class Lab2 {
         // can remove from priority queue until it is empty.
         while (buy_pq.size() > 0) {
             Bid max = buy_pq.minimum();
-            sb.append(max.toString());
+            sb.append(max.toString()+ ", ");
             buy_pq.deleteMinimum();
         }
 
